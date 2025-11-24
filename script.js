@@ -8,7 +8,7 @@
 
 
 
-    function createButton(){
+    function createButton(value){
         let x = Math.random()*window.innerWidth
         let y = Math.random()*window.innerHeight
 
@@ -17,11 +17,11 @@
         //html attributes
         element.setAttribute("class","drag");
         element.setAttribute("id", `${count}`);
-        element.setAttribute("onClick","createButton()")
+        element.setAttribute("onClick",`createButton(${value})`)
         
         document.body.append(element);
         element.style.left= x+"px"
-        element.style.top= y+"px"
+        element.style.top= `${y}px`
         console.log("botón creado en "+ x +"x "+y+"y");
         
         element.addEventListener("mouseenter", (e)=>{
@@ -41,10 +41,10 @@
                 actualizeScorer(score+1)
                 buttons[index].value += 1
                 buttons[index].element.innerText = buttons[index].value
+                buttons[index].element.setAttribute("onClick",`createButton(${buttons[index].value})`)
             }
         })
         
-        let value = 0
         element.innerText=value
         const button = {
             element:element,
@@ -84,4 +84,4 @@
         }
         //initialize game
         actualizeScorer(0)
-        createButton()
+        createButton(0)
