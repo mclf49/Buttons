@@ -67,6 +67,8 @@
 
     //Global events 
         document.addEventListener("mousedown", (e)=>{
+            console.log(e);
+            
             pressedButton = e.target.attributes.id.value
             console.log(pressedButton);
         })
