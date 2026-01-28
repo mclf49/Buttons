@@ -80,6 +80,7 @@
     //Global events 
         document.addEventListener("mousedown", (e)=>{
             pressedButton = e.target.attributes.id.value
+
             //  console.log(`El id del botón pulsado es ${pressedButton}`);
         })
 
@@ -87,6 +88,8 @@
             if(!pressedButton){
                 return
             }
+            buttons[pressedButton].element.style.pointerEvents = "none"
+
             let mouseX = e.clientX
             let mouseY = e.clientY
             
@@ -95,12 +98,15 @@
             
             buttons[pressedButton].element.style.left= `${mouseX-buttonW/2}px`
             buttons[pressedButton].element.style.top= `${mouseY-buttonH/2}px`
+
         })
 
         document.addEventListener("mouseup", (e)=>{
             if(!pressedButton){
                 return
             }
+             buttons[pressedButton].element.style.pointerEvents = "auto"
+
             pressedButton = undefined
         })
 
