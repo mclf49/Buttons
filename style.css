@@ -15,11 +15,18 @@
         width: 17px;
         pointer-events: none;
 }
+.fa-circle{
+    align-self: flex-end;
+    font-size: 0.3em;
+}
 
 #header{
     border-bottom: ridge;
     display: flex;
     justify-content: space-evenly;
+}
+#header p *{
+        width: 17px;
 }
 #createButtonButton {
     justify-content: center;
