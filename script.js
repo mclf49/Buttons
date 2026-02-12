@@ -2,38 +2,33 @@
     var pressedButton;
     const header = document.getElementById("header")
     const scorer = document.getElementById("headerScore")
+    
 
     var count = 0;
     var score = 0;
+    var objective
 
 
 
     function createButton(value){
 
         if(value<=0){return}
-        console.log(`El valor del botón creado es ${value}`);
-        
 
-        let x = Math.random()*window.innerWidth
-        let y = Math.random()*window.innerHeight
-        
         element = document.createElement("button");
-        
-        const button = {
-            element:element,
-            value: value,
-        }
+        const button = {}
+        button.id = count
+        button.element=element;
+        button.value=value;
+        button.uses=3;
 
         //html attributes
+        
         element.setAttribute("class","drag");
         element.setAttribute("id", `${count}`);
-        element.setAttribute("onClick",`createButton(${value}); increaseValue(${count},1)`)
-        
-        element.style.left= x+"px"
-        element.style.top= `${y}px`
-        //console.log("botón creado en "+ x +"x "+y+"y");
+        element.setAttribute("onClick",`useButton(${count})`)
         
         element.addEventListener("mouseenter", (e)=>{
+
             let index = e.target.attributes.id.value;
             
             console.log(`El valor del botón es ${buttons[index].value}`);
@@ -47,47 +42,47 @@
                 buttons[index].value += buttons[pressedButton].value
                 drawValue(index)
                 
-                buttons[index].element.setAttribute("onClick",`createButton(${buttons[index].value}); increaseValue(${index},${buttons[index].value})`)
-            
+                buttons[index].element.setAttribute("onClick",`useButton(${buttons[index].id})`)
+                console.log(buttons[index].id);
                 
         })
         
+
+
         document.body.append(element);
+
+        console.log(header.offsetHeight);
+        
+        let maxHeight = window.innerHeight-element.offsetHeight-50
+        let minHeight = header.offsetHeight+50
+
+        element.style.top = `${Math.random()*(maxHeight-minHeight)+minHeight}px`
+
+        let maxWidth = window.innerWidth-element.offsetWidth-100
+        
+        element.style.left = `${Math.random()*(maxWidth-50)+50}px`
+        
         buttons[count]= button;
         drawValue(count)
         count++;
     }
 
-    function increaseValue(count, incremento){
-        buttons[count].value+=incremento
-        
-        drawValue(count)
-    }
-
-    function drawValue(buttonID){
-        buttons[buttonID].element.innerHTML="";
-        for(digit of buttons[buttonID].value.toString().split("")){ 
-                    if(digit=="+"){digit="plus"}
-                    else if(digit=="."){digit="circle"}
-                    buttons[buttonID].element.innerHTML += `<i class="fa-solid fa-${digit}"></i>`
-                }
-
-        if(score<buttons[buttonID].value){
-            score=buttons[buttonID].value} 
-        actualizeScorer(score)
-    }
 
     //Global events 
-        document.addEventListener("mousedown", (e)=>{
-            console.log(e);
-            
-            pressedButton = e.target.attributes.id.value
 
-            //  console.log(`El id del botón pulsado es ${pressedButton}`);
+
+        //Mouse behaviour
+
+        //When mouse is clicked
+
+        document.addEventListener("mousedown", (e)=>{
+            pressedButton = e.target.attributes.id.value
         })
 
+        //When mouse moves
+
         document.addEventListener("mousemove", (e)=>{
-            if(!pressedButton){
+            if(!buttons[pressedButton]){
                 return
             }
             buttons[pressedButton].element.style.pointerEvents = "none"
@@ -103,6 +98,8 @@
 
         })
 
+        //When mouse is released
+
         document.addEventListener("mouseup", (e)=>{
             if(!pressedButton){
                 return
@@ -112,18 +109,61 @@
             pressedButton = undefined
         })
 
-        function actualizeScorer(score) {
+        //GameManagers
+
+        function drawValue(buttonID){
+        buttons[buttonID].element.innerHTML="";
+        for(digit of buttons[buttonID].value.toString().split("")){ 
+                    if(digit=="+"){digit="plus"}
+                    else if(digit=="."){digit="circle"}
+                    buttons[buttonID].element.innerHTML += `<i class="fa-solid fa-${digit}"></i>`
+                }
+
+        if(score<buttons[buttonID].value){score=buttons[buttonID].value} 
+        updateScorer(score)
+        }
+
+        function updateScorer(score) {
 
             scorer.innerHTML=""
 
             for(digit of score.toString().split("")){      
             if(digit=="+"){digit="plus"}
             else if(digit=="."){digit="circle"}
-            scorer.innerHTML+=`<i class="fa-solid fa-${digit}"></i>`;
-            //console.log("the score is "+score);
+            scorer.innerHTML+=`<i class="fa-solid fa-${digit}"></i>`
         }
+            scorer.innerHTML+=`<i class="fa-solid fa-slash fa-rotate-90 fa-xs"></i>`
+
+            for(digit of objective.toString().split("")){      
+            if(digit=="+"){digit="plus"}
+            else if(digit=="."){digit="circle"}
+            scorer.innerHTML+=`<i class="fa-solid fa-${digit}"></i>`
+        }
+            if(score==objective){
+                alert("GANASTE")
+            }
         }
 
-        //initialize game
-        actualizeScorer(1)
+        function useButton(buttonID){
+            createButton(buttons[buttonID].value)
+            buttons[buttonID].uses--
+            if(buttons[buttonID].uses<=0){
+                document.body.removeChild(buttons[buttonID].element)
+            }
+        }
+
+        function setObjective(){
+            mult = Math.floor(Math.random()*9999)
+            console.log(mult);
+            objective= Math.floor(Math.random()*mult)
+            console.log(objective);
+            
+        }
+
+        function initializeGame(){
+        setObjective()
+        updateScorer(1)
         createButton(1)
+        }
+
+        initializeGame()
