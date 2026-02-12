@@ -6,6 +6,7 @@
 
     var count = 0;
     var score = 0;
+    var objective
 
 
 
@@ -121,17 +122,27 @@
                 }
 
         if(score<buttons[buttonID].value){score=buttons[buttonID].value} 
-        actualizeScorer(score)
+        updateScorer(score)
         }
 
-        function actualizeScorer(score) {
+        function updateScorer(score) {
 
             scorer.innerHTML=""
 
             for(digit of score.toString().split("")){      
             if(digit=="+"){digit="plus"}
             else if(digit=="."){digit="circle"}
-            scorer.innerHTML+=`<i class="fa-solid fa-${digit}"></i>`;
+            scorer.innerHTML+=`<i class="fa-solid fa-${digit}"></i>`
+        }
+            scorer.innerHTML+=`<i class="fa-solid fa-slash fa-rotate-90 fa-xs"></i>`
+
+            for(digit of objective.toString().split("")){      
+            if(digit=="+"){digit="plus"}
+            else if(digit=="."){digit="circle"}
+            scorer.innerHTML+=`<i class="fa-solid fa-${digit}"></i>`
+        }
+            if(score==objective){
+                alert("GANASTE")
             }
         }
 
@@ -143,6 +154,18 @@
             }
         }
 
-        //initialize game
-        actualizeScorer(1)
+        function setObjective(){
+            mult = Math.floor(Math.random()*9999)
+            console.log(mult);
+            objective= Math.floor(Math.random()*mult)
+            console.log(objective);
+            
+        }
+
+        function initializeGame(){
+        setObjective()
+        updateScorer(1)
         createButton(1)
+        }
+
+        initializeGame()
